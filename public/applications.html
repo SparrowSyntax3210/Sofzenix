@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/api/v1/interns/applications" method="POST" id="applicationForm">
+        <input type="text" name="Name" placeholder="Enter your name">
+        <input type="text" name="Aadhar" placeholder="Enter Aadhar">
+        <input type="text" name="College" placeholder="Enter College">
+        <input type="text" name="Certificate" placeholder="Certificate URL">
+        <input type="text" name="Resume" placeholder="Resume URL">
+        <button type="submit">Submit</button>
+    </form>
+
+    <button type="button" type="submit" class="get-status">
+        Show Status
+    </button>
+    <div class="show-status"></div>
+    <script>
+        let applicationId = null;
+        const params = new URLSearchParams(window.location.search);
+        const opportunityId = params.get("opportunityId");
+        
+        const form = document.getElementById("applicationForm");
+        
+        form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const data = {
+        Name: formData.get("Name"),
+        Aadhar: formData.get("Aadhar"),
+        College: formData.get("College"),
+        Certificate: formData.get("Certificate"),
+        Resume: formData.get("Resume"),
+        opportunityId: Number(opportunityId)
+    };
+
+    const res = await fetch("http://localhost:5000/api/v1/interns/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+        applicationId = result.id; // 🔥 IMPORTANT FIX
+        alert("Application submitted successfully!");
+    }
+});
+
+const statusBtn = document.querySelector(".get-status");
+const statusbox = document.querySelector(".show-status");
+
+statusBtn.addEventListener("click", async () => {
+
+    if (!applicationId) {
+        statusbox.innerHTML = "<h2>No application submitted yet</h2>";
+        return;
+    }
+
+    const res = await fetch(
+        `http://localhost:5000/api/v1/interns/applications/${applicationId}/status`
+    );
+
+    const data = await res.json();
+
+    statusbox.innerHTML = `
+        <h2>Status: ${data.status}</h2>
+    `;
+});
+        
+    </script>
+</body>
+</html>
