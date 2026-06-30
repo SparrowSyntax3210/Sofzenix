@@ -4,6 +4,7 @@ const interview = require("../routes/interview");
 const LogRoutes = require("../routes/auth.routes");
 const adminRoutes = require("../routes/hr-creation.routes");
 const hrRoutes = require("../routes/teamlead-creation.routes");
+const validRoles = ["admin", "hr", "teamlead", "intern"];
 const app = express();
 
 
@@ -15,6 +16,16 @@ app.use("/login" , LogRoutes)
 app.use("/admin", adminRoutes);
 app.use("/hr", hrRoutes);
 
+
+app.get("/login/:role", (req, res) => {
+    const { role } = req.params;
+
+    if (!validRoles.includes(role)) {
+        return res.status(404).send("Page Not Found");
+    }
+
+    res.redirect(`/login-${role}.html`);
+});
 app.get("/test" , (req,res)=> {
     res.send("Route Running");
 });
