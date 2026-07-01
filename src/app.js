@@ -24,10 +24,7 @@ app.get("/login/:role", (req, res) => {
         return res.status(404).send("Page Not Found");
     }
 
-    res.redirect(`/login-${role}.html`);
-});
-app.get("/test" , (req,res)=> {
-    res.send("Route Running");
+    res.redirect(`/login/login-${role}.html`);
 });
 
 

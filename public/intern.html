@@ -6,6 +6,11 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="container-oppo">
+        <button class="show-opportunities">Show Opportunities</button>
+        <h1 class="heading"></h1>
+    </div>
+
     <form action="/api/v1/interns/applications" method="POST" id="applicationForm">
         <input type="text" name="Name" placeholder="Enter your name">
         <input type="text" name="Aadhar" placeholder="Enter Aadhar">
@@ -74,6 +79,42 @@ statusBtn.addEventListener("click", async () => {
         <h2>Status: ${data.status}</h2>
     `;
 });
+const opportunitiesContainer = document.querySelector(".container-oppo");
+        const btn = document.querySelector(".show-opportunities");
+
+        btn.addEventListener("click", async () => {
+            console.log("clicked");
+
+            const res = await fetch("http://localhost:5000/api/v1/interns/opportunities");
+            const opportunities = await res.json();
+
+            opportunitiesContainer.innerHTML = "";
+
+            opportunities.forEach(opportunity => {
+                opportunitiesContainer.innerHTML += `
+                    <div class="card">
+                        <h2>Role: ${opportunity.Role}</h2>
+                        <h3>Date: ${opportunity.Date}</h3>
+                        <h3>Location: ${opportunity.Location}</h3>
+
+                        <button class="apply-btn" data-id="${opportunity.id}">
+                            Apply
+                        </button>
+                    </div>
+                `;
+            });
+        });
+
+        document.addEventListener("click", (e) => {
+            const btn = e.target.closest(".apply-btn");
+
+            if (!btn) return;
+
+            console.log("RAW dataset:", btn.dataset);
+            console.log("ID type:", typeof btn.dataset.id);
+
+            window.location.href = `applications.html?opportunityId=${btn.dataset.id}`;
+        });
         
     </script>
 </body>

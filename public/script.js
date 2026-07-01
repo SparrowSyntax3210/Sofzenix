@@ -113,3 +113,51 @@ container.addEventListener("click", async (e) => {
         }
     }
 });
+
+const form = document.getElementById("createTeamLeadForm");
+
+form.addEventListener("submit", createTeamLead);
+
+async function createTeamLead(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please login as HR first.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/hr/create-teamlead", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.message);
+            return;
+        }
+
+        alert("Team Lead account created successfully!");
+
+        form.reset();
+
+    } catch (err) {
+        console.error(err);
+        alert("Server Error");
+    }
+}

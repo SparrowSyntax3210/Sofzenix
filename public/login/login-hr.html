@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Lead Login</title>
+<title>HR Login</title>
 <link rel="stylesheet" href="login.css">
 </head>
 
@@ -13,14 +13,14 @@
 
 <div class="card">
 
-<h2>Team Lead Login</h2>
+<h2>HR Login</h2>
 
 <form id="loginForm">
 
 <input
 type="email"
 id="email"
-placeholder="Team Lead Email"
+placeholder="HR Email"
 required>
 
 <input
@@ -50,7 +50,7 @@ e.preventDefault();
 const email=document.getElementById("email").value;
 const password=document.getElementById("password").value;
 
-const response=await fetch("/login/teamlead",{
+const response=await fetch("/login/hr",{
 
 method:"POST",
 
@@ -73,7 +73,7 @@ return;
 
 localStorage.setItem("token",data.token);
 
-window.location.href="/pending-applications.html";
+window.location.href="../hr.html";
 
 }
 

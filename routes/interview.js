@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const app = require("../src/app");
-const prisma = require("../models/login"); 
+const prisma = require("../config/prisma"); 
 
 router.post("/create-opportunities" , async (req,res)=> {
   try {
