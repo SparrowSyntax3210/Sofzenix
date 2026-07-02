@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create HR Account</title>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Create HR Account</h2>
+
+    <form id="createHrForm">
+
+        <input
+            type="email"
+            id="email"
+            placeholder="HR Email"
+            required
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+        >
+
+        <button type="submit">
+            Create HR
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+    const form = document.getElementById("createHrForm");
+
+form.addEventListener("submit", createHR);
+
+async function createHR(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please login as Admin first.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/admin/create-hr", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        const message = document.getElementById("message");
+
+        if (!response.ok) {
+            message.style.color = "red";
+            message.innerText = data.message;
+            return;
+        }
+
+        message.style.color = "green";
+        message.innerText = "HR account created successfully!";
+
+        form.reset();
+
+    } catch (err) {
+        console.error(err);
+
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "Server Error";
+    }
+
+}
+</script>
+
+</body>
+</html>
