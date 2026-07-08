@@ -3,18 +3,87 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Lock, Eye } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   role: string;
 };
 
 export default function LoginCard({ role }: Props) {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      let endpoint = "";
+
+      switch (role.toLowerCase()) {
+        case "administrator":
+          endpoint = "admin";
+          break;
+
+        case "hr":
+          endpoint = "hr";
+          break;
+
+        case "intern":
+          endpoint = "intern";
+          break;
+
+        case "team lead":
+          endpoint = "teamlead";
+          break;
+
+        default:
+          endpoint = "intern";
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/login/${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError("Unable to connect to backend server.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#F5F9FF] flex items-center justify-center px-6 py-12">
-
       <div className="w-full max-w-5xl bg-white rounded-[36px] shadow-2xl border border-[#E4EDF8] overflow-hidden grid lg:grid-cols-2">
 
-        {/* Left Section */}
+        {/* LEFT SECTION */}
 
         <div className="hidden lg:flex flex-col justify-center bg-[#EEF5FF] p-14">
 
@@ -47,17 +116,19 @@ export default function LoginCard({ role }: Props) {
 
         </div>
 
-        {/* Right Section */}
+        {/* RIGHT SECTION */}
 
         <div className="p-10 lg:p-14">
 
           <div className="lg:hidden flex justify-center mb-8">
+
             <Image
               src="/sofzenix.logo.png"
               alt="Sofzenix Logo"
               width={170}
               height={60}
             />
+
           </div>
 
           <h1 className="text-4xl font-black text-[#0F172A]">
@@ -65,10 +136,13 @@ export default function LoginCard({ role }: Props) {
           </h1>
 
           <p className="mt-3 text-[#64748B] text-lg">
-            Sign in to continue to your <span className="font-semibold">{role}</span> Workspace.
+            Sign in to continue to your{" "}
+            <span className="font-semibold">{role}</span> Workspace.
           </p>
 
           <div className="mt-10 space-y-6">
+
+            {/* Email */}
 
             <div>
 
@@ -86,12 +160,16 @@ export default function LoginCard({ role }: Props) {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 rounded-xl border border-[#D8E4F2] focus:ring-2 focus:ring-[#0F6CBD] outline-none transition"
                 />
 
               </div>
 
             </div>
+
+            {/* Password */}
 
             <div>
 
@@ -109,6 +187,8 @@ export default function LoginCard({ role }: Props) {
                 <input
                   type="password"
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-12 py-4 rounded-xl border border-[#D8E4F2] focus:ring-2 focus:ring-[#0F6CBD] outline-none transition"
                 />
 
@@ -120,6 +200,8 @@ export default function LoginCard({ role }: Props) {
               </div>
 
             </div>
+
+            {/* Remember */}
 
             <div className="flex items-center justify-between text-sm">
 
@@ -140,10 +222,22 @@ export default function LoginCard({ role }: Props) {
 
             </div>
 
-            <button className="w-full bg-[#0F6CBD] hover:bg-[#083A63] hover:scale-[1.02] transition-all duration-300 text-white py-4 rounded-xl font-semibold shadow-lg">
+            {/* Error */}
 
-              Sign In
+            {error && (
+              <p className="text-red-600 text-center text-sm">
+                {error}
+              </p>
+            )}
 
+            {/* Login Button */}
+
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              className="w-full bg-[#0F6CBD] hover:bg-[#083A63] transition-all duration-300 text-white py-4 rounded-xl font-semibold shadow-lg disabled:opacity-60"
+            >
+              {loading ? "Signing In..." : "Sign In"}
             </button>
 
           </div>
@@ -155,7 +249,6 @@ export default function LoginCard({ role }: Props) {
         </div>
 
       </div>
-
     </main>
   );
 }

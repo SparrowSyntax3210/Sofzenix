@@ -12,6 +12,7 @@
     "@prisma/client": "^7.8.0",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
+    "lightningcss": "^1.32.0",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
     "prisma": "^7.8.0",
@@ -29,6 +30,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "5.9.3"
   }
 }

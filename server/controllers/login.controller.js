@@ -9,7 +9,7 @@ exports.hrLogin = (req, res) => {
 };
 
 exports.adminLogin = (req, res) => {
-    login(req, res, "admin");
+    login(req, res, "admin"); 
 };
 
 exports.teamLeadLogin = (req, res) => {
