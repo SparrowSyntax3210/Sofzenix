@@ -1,4 +1,32 @@
 export default function ApplicationPage() {
+  const handleSubmit = async () => {
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/v1/interns/pending-applications",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // send form data here
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Submission failed");
+      return;
+    }
+
+    alert("Application submitted successfully!");
+  } catch (error) {
+    console.error(error);
+    alert("Unable to connect to server");
+  }
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 py-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -128,7 +156,7 @@ export default function ApplicationPage() {
           </div>
 
           {/* Submit Button */}
-          <button className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-4 rounded-xl transition">
+          <button onClick={handleSubmit} id="Submit" className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-4 rounded-xl transition">
             🚀 Submit Application
           </button>
         </div>

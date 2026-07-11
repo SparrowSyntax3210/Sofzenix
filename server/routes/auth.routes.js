@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authController = require("../controllers/login.controller");
 
 const {
     internLogin,
@@ -12,6 +13,7 @@ router.post("/intern", internLogin);
 router.post("/hr", hrLogin);
 router.post("/admin", adminLogin);
 router.post("/teamlead", teamLeadLogin);
+router.put("/change-password", authController.changePassword);
 
 
 module.exports = router;

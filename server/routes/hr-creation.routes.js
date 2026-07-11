@@ -46,4 +46,5 @@ router.post("/create-hr", auth(["admin"]), async (req, res) => {
     }
 });
 
+
 module.exports = router;

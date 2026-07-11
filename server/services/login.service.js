@@ -8,7 +8,23 @@ module.exports = async (req, res, role) => {
     console.log(req.body);
     console.log("Role:", role);
 
+<<<<<<< HEAD
     const { email, password } = req.body;
+=======
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required."
+            });
+        }
+
+        const user = await prisma.login.findFirst({
+            where: {
+                email,
+                role
+            }
+        });
+>>>>>>> 75b82c9f3db06f2752d3e170b9768ad1025ae258
 
     const user = await prisma.login.findFirst({
       where: {

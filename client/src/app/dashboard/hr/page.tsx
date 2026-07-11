@@ -90,7 +90,7 @@ export default function DashboardPage() {
               </p>
 
               <button
-                onClick={() => router.push("/application")}
+                onClick={() => router.push("http://localhost:5000/api/v1/interns/pending-applications")}
                 className="mt-6 bg-white text-blue-600 font-semibold px-6 py-3 rounded-xl hover:scale-105 transition"
               >
                 View Applications →

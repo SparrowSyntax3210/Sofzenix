@@ -15,3 +15,7 @@ exports.adminLogin = (req, res) => {
 exports.teamLeadLogin = (req, res) => {
     login(req, res, "teamlead");
 };
+
+exports.changePassword = async (req, res) => {
+    return changePasswordService(req, res);
+};

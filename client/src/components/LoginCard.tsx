@@ -18,59 +18,89 @@ export default function LoginCard({ role }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      setLoading(true);
-      setError("");
+ const handleLogin = async () => {
+  try {
+    setLoading(true);
+    setError("");
 
-      let endpoint = "";
+    let endpoint = "";
 
-      switch (role.toLowerCase()) {
-        case "administrator":
-          endpoint = "admin";
-          break;
+    switch (role.toLowerCase()) {
+      case "administrator":
+        endpoint = "admin";
+        break;
 
-        case "hr":
-          endpoint = "hr";
-          break;
+      case "hr":
+        endpoint = "hr";
+        break;
 
-        case "intern":
-          endpoint = "intern";
-          break;
+      case "intern":
+        endpoint = "intern";
+        break;
 
-        case "team lead":
-          endpoint = "teamlead";
-          break;
+      case "team lead":
+        endpoint = "teamlead";
+        break;
 
-        default:
-          endpoint = "intern";
-      }
+      default:
+        endpoint = "intern";
+    }
 
-      const response = await fetch(
-        `http://localhost:5000/login/${endpoint}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+    console.log("Logging in as:", endpoint);
 
-      const data = await response.json();
+    const response = await fetch(`http://localhost:5000/login/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
+    console.log("Response Status:", response.status);
 
+    const data = await response.json();
+
+    console.log("Response Data:", data);
+
+    if (!response.ok) {
+      setError(data.message || "Login failed");
+      return;
+    }
+
+    // Save token and user
+    if (data.token) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+    }
 
-      router.push("/dashboard");
+    if (data.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
+    console.log("Redirecting...");
+
+    switch (endpoint) {
+      case "admin":
+        router.push("/dashboard/admin");
+        break;
+
+      case "hr":
+        router.push("/dashboard/hr");
+        break;
+
+      case "intern":
+        router.push("/dashboard/intern");
+        break;
+
+      case "teamlead":
+        router.push("/dashboard/teamlead");
+        break;
+
+      default:
+        router.push("/");
+    }
     } catch (err) {
       console.error(err);
       setError("Unable to connect to backend server.");
