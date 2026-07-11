@@ -23,20 +23,5 @@ app.use("/login", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/hr", hrRoutes);
 
-// Home Route
-app.get("/", (req, res) => {
-    res.redirect("http://localhost:3000/dashboard");
-});
-
-// Redirect login routes
-app.get("/login/:role", (req, res) => {
-    const { role } = req.params;
-
-    if (!validRoles.includes(role)) {
-        return res.status(404).send("Page Not Found");
-    }
-
-    res.redirect(`http://localhost:3000/login/${role}`);
-});
 
 module.exports = app;
